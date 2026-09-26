@@ -1,0 +1,227 @@
+{
+  "theme": "dark_and_light_hybrid_industrial",
+  "archetype": "ARCHETYPE 4: SWISS & HIGH-CONTRAST / ARCHETYPE 2: THE PERFORMANCE PRO (Tactical Institutional Precision)",
+  "colors": {
+    "surfaces": [
+      {
+        "name": "page",
+        "kind": "solid",
+        "bg": "#0B0F17",
+        "on_bg": "#F1F5F9",
+        "on_bg_muted": "#94A3B8",
+        "roles": {
+          "accent_highlight": "#FF6B00",
+          "border_subtle": "#1E293B",
+          "border_technical": "#334155",
+          "card_bg": "#111827",
+          "card_hover": "#1E293B",
+          "link": "#38BDF8",
+          "success": "#22C55E",
+          "error": "#EF4444"
+        }
+      },
+      {
+        "name": "panel_elevated",
+        "kind": "solid",
+        "bg": "#111827",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#94A3B8",
+        "roles": {
+          "tag_bg": "#1E293B",
+          "tag_text": "#E2E8F0",
+          "border_accent": "#FF6B00"
+        }
+      },
+      {
+        "name": "hero_banner",
+        "kind": "image",
+        "contrast_against": "#0B0F17",
+        "guarantee": "scrim: linear-gradient(to bottom, rgba(11,15,23,0.85) 0%, rgba(11,15,23,0.95) 100%)",
+        "on_bg": "#FFFFFF",
+        "on_bg_muted": "#CBD5E1",
+        "roles": {
+          "link": "#38BDF8",
+          "kicker": "#FF6B00",
+          "error": "#F87171",
+          "success": "#4ADE80"
+        }
+      },
+      {
+        "name": "conversion_strip",
+        "kind": "solid",
+        "bg": "#0F172A",
+        "on_bg": "#FFFFFF",
+        "on_bg_muted": "#94A3B8",
+        "roles": {
+          "cta_primary_bg": "#FF6B00",
+          "cta_primary_text": "#FFFFFF",
+          "cta_secondary_bg": "#1E293B",
+          "cta_secondary_text": "#F8FAFC",
+          "border": "#FF6B00"
+        }
+      },
+      {
+        "name": "rfq_modal",
+        "kind": "solid",
+        "bg": "#0B0F17",
+        "on_bg": "#F8FAFC",
+        "on_bg_muted": "#94A3B8",
+        "roles": {
+          "input_bg": "#111827",
+          "input_border": "#334155",
+          "input_text": "#F8FAFC",
+          "focus_ring": "#FF6B00"
+        }
+      },
+      {
+        "name": "institutional_badge",
+        "kind": "solid",
+        "bg": "#1E293B",
+        "on_bg": "#F1F5F9",
+        "on_bg_muted": "#94A3B8"
+      }
+    ],
+    "accent": "#FF6B00",
+    "on_accent": "#FFFFFF",
+    "neutral_dark": "#0B0F17",
+    "neutral_steel": "#1E293B",
+    "neutral_light": "#F8FAFC",
+    "tactical_amber": "#D97706"
+  },
+  "typography": {
+    "font_heading": "'Space Grotesk Variable', sans-serif",
+    "font_body": "'DM Sans Variable', sans-serif",
+    "font_mono": "'IBM Plex Mono', monospace",
+    "scale_px": {
+      "display": 56,
+      "h1": 44,
+      "h2": 32,
+      "h3": 22,
+      "body": 16,
+      "caption": 14
+    },
+    "letter_spacing": {
+      "heading_tight": "-0.03em",
+      "overlines": "0.18em",
+      "body_relaxed": "0.01em"
+    }
+  },
+  "entry_surfaces": {
+    "/": "editorial technical hero with kinetic line reveal + est. 2007 institutional counter panel left, dynamic tactical telemetry & RFQ trigger right",
+    "/rfq": "dual-column institutional RFQ submission portal with technical scope selector and enterprise BOQ upload"
+  },
+  "component_structure": {
+    "Header": {
+      "path": "@/components/Header.tsx",
+      "description": "Fixed crystal glass header (backdrop-blur-xl bg-[#0B0F17]/80 border-b border-[#1E293B]) with Midas institutional wordmark, EST. 2007 badge, navigation links (Capabilities, Industries, Process, Clients, Quality & HSE, Contact), and primary CTA 'SUBMIT AN RFQ'."
+    },
+    "HeroSection": {
+      "path": "@/components/HeroSection.tsx",
+      "description": "Cinematic institutional hero with masked kinetic line reveal: 'Engineered Procurement & Multidisciplinary Contracting for Demanding Sectors.' Featuring technical coordinates (Rawalpindi HQ 33.5973° N, 73.0479° E), 17+ Years Credibility counters (Est. June 10, 2007), quick conversion triggers, and ambient tactical glow."
+    },
+    "InstitutionalCredibility": {
+      "path": "@/components/InstitutionalCredibility.tsx",
+      "description": "High-density metric strip and compliance badges highlighting 17+ years active B2B operations in Rawalpindi/Islamabad & across Pakistan, vetted supply chains, and multi-sector institutional compliance."
+    },
+    "CapabilityGroups": {
+      "path": "@/components/CapabilityGroups.tsx",
+      "description": "8-group Tetris / Bento grid layout with interactive expanded drawer/tabs: 1. Procurement & General Supply, 2. Construction & Renovation, 3. Fire, Safety & Security, 4. Facility & Technical Services, 5. Fabrication & Infrastructure, 6. Interiors & Fitout, 7. Printing & Corporate Supply, 8. Special Projects. Each card features technical specs, scope breakdown, and direct RFQ link."
+    },
+    "IndustriesServed": {
+      "path": "@/components/IndustriesServed.tsx",
+      "description": "Technical grid for 8 key verticals: Diplomatic & Foreign Missions, Oil & Gas / Energy, Corporate & Multinationals, Industrial Manufacturing, Healthcare & Medical Centers, Higher Education Institutions, Commercial Real Estate, Security & Critical Infrastructure."
+    },
+    "HowMidasWorks": {
+      "path": "@/components/HowMidasWorks.tsx",
+      "description": "6-stage rigorous procurement lifecycle: 1. Requirement Intake → 2. Technical Evaluation & BOQ Review → 3. Global & Local Sourcing / Engineering → 4. Institutional Proposal & Compliance → 5. Rigorous Execution / Installation → 6. Post-Delivery QA & SLA Support."
+    },
+    "ClientExperience": {
+      "path": "@/components/ClientExperience.tsx",
+      "description": "Monochrome typographic wordmark tiles that colorize on hover: U.S. Embassy (Diplomatic), MOL Pakistan (Oil & Gas), Mari Energies, PGNiG / Polish Oil & Gas, HBL (Habib Bank Limited), Al Razi Hospital, Beaconhouse & Private Education Systems. Understated, dignified B2B presentation."
+    },
+    "ConversionStrip": {
+      "path": "@/components/ConversionStrip.tsx",
+      "description": "Prominent conversion block with eyebrow 'INSTITUTIONAL ENGAGEMENT', headline 'Looking for a dependable local supplier or project partner in Pakistan?', dual CTAs: 'SUBMIT AN RFQ' and 'DISCUSS YOUR REQUIREMENT' triggering the interactive modal."
+    },
+    "ProjectShowcase": {
+      "path": "@/components/ProjectShowcase.tsx",
+      "description": "Curated case highlights of multidisciplinary deliveries across diplomatic compounds, upstream energy sites, commercial infrastructure, and medical facilities with verified BOQ turnaround specs."
+    },
+    "QualityHsePhilosophy": {
+      "path": "@/components/QualityHsePhilosophy.tsx",
+      "description": "Zero-compromise Quality Assurance, HSE (Health, Safety & Environment), ISO alignment, and ethical vendor management standards."
+    },
+    "RfqModal": {
+      "path": "@/components/RfqModal.tsx",
+      "description": "High-performance modal dialog connected to FastAPI + MongoDB backend (`/api/rfq`). Fields: Full Name, Organization / Company, Email, Phone (+92 Pakistan format supported), Requirement Type (RFQ, BOQ, Procurement, Maintenance, Special Project, General Inquiry), Urgency Level, Project Location / City, Message / Specifications, and simulated BOQ file attachment."
+    },
+    "ContactSection": {
+      "path": "@/components/ContactSection.tsx",
+      "description": "HQ: 3276/1 Adam Jee Road, Saddar, Rawalpindi, Pakistan. Landline: 051-5519925. Direct/WhatsApp: 0313-0910555. Email: midassourcespakistan@gmail.com. Interactive map coordinate block & quick direct message form."
+    },
+    "Footer": {
+      "path": "@/components/Footer.tsx",
+      "description": "Architectural heavy footer with massive brand wordmark, quick access to 8 capability divisions, regulatory disclaimer, legal copyright EST. 2007, and time in Rawalpindi (PKT UTC+5)."
+    }
+  },
+  "image_urls": {
+    "hero_oil_gas": {
+      "url": "https://images.unsplash.com/photo-1516937941344-00b4e0337589?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHwxfHxpbmR1c3RyaWFsJTIwb2lsJTIwZ2FzJTIwcmVmaW5lcnklMjBlbmdpbmVlcmluZ3xlbnwwfHx8fDE3OTA0MjM3NzJ8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Industrial heavy engineering oil & gas refinery complex under cloudy sky, used in hero/capabilities overlay with heavy dark technical scrim."
+    },
+    "procurement_logistics": {
+      "url": "https://images.unsplash.com/photo-1592085198739-ffcad7f36b54?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NTY2NzB8MHwxfHNlYXJjaHwxfHxsb2dpc3RpY3MlMjB3YXJlaG91c2UlMjBzdXBwbHklMjBjaGFpbiUyMGZyZWlnaHR8ZW58MHx8fHwxNzkwNDIzNzcyfDA&ixlib=rb-4.1.0&q=85",
+      "description": "High-bay industrial supply chain warehouse racking for Procurement & General Supply capability showcase."
+    },
+    "commercial_infrastructure": {
+      "url": "https://images.unsplash.com/photo-1574848296471-28f79a036f79?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NjZ8MHwxfHNlYXJjaHwxfHxjb21tZXJjaWFsJTIwYnVpbGRpbmclMjBtb2Rlcm4lMjBhcmNoaXRlY3R1cmV8ZW58MHx8fHwxNzkwNDIzNzcyfDA&ixlib=rb-4.1.0&q=85",
+      "description": "Precision geometric commercial architectural structure for Construction, Renovation & Facility Services."
+    },
+    "technical_fabrication": {
+      "url": "https://images.unsplash.com/photo-1602056820935-316884c035f8?crop=entropy&cs=srgb&fm=jpg&ixid=M3w3NDk1Nzl8MHwxfHNlYXJjaHw0fHxpbmR1c3RyaWFsJTIwb2lsJTIwZ2FzJTIwcmVmaW5lcnklMjBlbmdpbmVlcmluZ3xlbnwwfHx8fDE3OTA0MjM3NzJ8MA&ixlib=rb-4.1.0&q=85",
+      "description": "Illuminated engineering industrial plant representing 24/7 technical capabilities and heavy infrastructure support."
+    }
+  },
+  "motion_guidelines": {
+    "engine": "motion/react",
+    "stagger_children": 0.08,
+    "hover_transition": "transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease, background-color 0.25s ease",
+    "spring_physics": {
+      "stiffness": 300,
+      "damping": 24
+    },
+    "kinetic_reveals": "Staggered line clip-path reveals on hero headline and capability cards"
+  },
+  "accessibility": {
+    "wcag_level": "WCAG 2.1 AA Compliant",
+    "min_contrast": "4.5:1 for normal text, 3:1 for large display titles",
+    "aria_compliance": {
+      "buttons": "aria-label and explicit data-testid attributes",
+      "modals": "Focus trapped within Dialog with DialogTitle & accessible close controls",
+      "decorative_icons": "aria-hidden='true'"
+    }
+  },
+  "instructions_to_main_agent": [
+    "1. Mount FastAPI backend endpoints in `backend/routers/rfq.py` for `/api/rfq` POST and GET, storing inquiries into MongoDB collection `rfqs` with auto-timestamping.",
+    "2. Seed initial realistic RFQ records in `backend/seed.py` for testing and demonstration.",
+    "3. Set up the frontend UI using Tailwind v4 in `frontend/src/index.css` with `@import '@fontsource-variable/space-grotesk';` and `@import '@fontsource-variable/dm-sans';`.",
+    "4. Implement all key sections matching the requested sequence: 1) Positioning Hero with EST 2007 ticker, 2) Institutional Credibility Strip, 3) Procurement Capability Matrix, 4) 8 Core Capability Groups with interactive drawers, 5) 8 Industries Served, 6) 6-Step How Midas Works Process Timeline, 7) Selected Clients & Experience Monochrome Wordmark Wall + RFQ Conversion Strip, 8) Multidisciplinary Project Showcase, 9) Quality & HSE Philosophy, 10) Full Contact Details & Direct Inquiry Form.",
+    "5. Provide an interactive RFQ / Quote Request modal that seamlessly submits to `/api/rfq` and displays instant confirmation with sonner toast notification.",
+    "6. Ensure all interactive and key informational elements have clear `data-testid` attributes (e.g. `data-testid='hero-rfq-btn'`, `data-testid='conversion-strip-rfq-btn'`, `data-testid='rfq-modal-submit-btn'`).",
+    "7. Include a live RFQ Management / Admin drawer or view allowing the team to inspect submitted inquiries and test end-to-end B2B lead capture functionality."
+  ],
+  "UNIVERSAL GUIDELINES FOR MAIN AGENT": {
+    "anti_patterns": [
+      "No generic centered templates or bootstrap cards",
+      "No light purple AI gradients (#7351B7 is strictly forbidden)",
+      "No stock handshakes or fake call center photos",
+      "No missing contrast: text must maintain high legibility against dark slate surfaces"
+    ],
+    "pro_patterns": [
+      "Precision technical typography with monospace badges & coordinates",
+      "Monochrome client logo wordmarks that smoothly tint on hover",
+      "High density of actionable procurement data and clear RFQ/BOQ pathways",
+      "Generous spacing: p-8/p-12 with 1px dark slate borders and vibrant safety orange CTAs"
+    ]
+  }
+}
