@@ -3,11 +3,11 @@ import { useRfq } from "@/components/RfqModal";
 import { Menu, X } from "lucide-react";
 
 const NAV = [
+  { label: "About", href: "#about" },
   { label: "Capabilities", href: "#capabilities" },
   { label: "Industries", href: "#industries" },
   { label: "Process", href: "#process" },
   { label: "Clients", href: "#clients" },
-  { label: "Quality & HSE", href: "#quality" },
   { label: "Contact", href: "#contact" },
 ];
 

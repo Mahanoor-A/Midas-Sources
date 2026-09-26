@@ -6,6 +6,7 @@ import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { Marquee } from "@/components/Marquee";
 import { CredibilityStrip } from "@/components/CredibilityStrip";
+import { AboutSection } from "@/components/AboutSection";
 import { CapabilityGroups } from "@/components/CapabilityGroups";
 import { IndustriesServed } from "@/components/IndustriesServed";
 import { HowMidasWorks } from "@/components/HowMidasWorks";
@@ -41,6 +42,7 @@ export default function Home() {
           <HeroSection />
           <Marquee />
           <CredibilityStrip />
+          <AboutSection />
           <CapabilityGroups />
           <IndustriesServed />
           <HowMidasWorks />
