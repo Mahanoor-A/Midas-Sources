@@ -26,6 +26,7 @@ Build the digital credibility + B2B lead-generation website for Midas Sources In
 ## Implemented
 - 2026-09-26: Full one-page site: kinetic masked-reveal hero with parallax refinery backdrop, editorial marquee, credibility strip, bento capability matrix, industries grid, process timeline, Section 6 client wall with hover color reveal + disclaimer, conversion strip, project showcase, Quality/HSE, contact, footer with live PKT clock, RFQ modal → `/api/rfq` (POST/GET) with toast confirmation. Original SVG "M" mark as logo + favicon. Verified end-to-end via public URL (browser pass + curl, 422 negative case).
 - 2026-09-26: Admin Inquiries Dashboard at /admin (JWT httpOnly-cookie auth, brute-force lockout, seeded admin from env, RFQ list with attachment downloads). Email alerts on every new RFQ via Emergent managed Resend (pipeline verified; gmail recipient blocked by platform deliverability guard in preview). BOQ file upload in RFQ modal via object storage (10MB, type-whitelisted, admin-only download). Case Snapshots section (4 sector cards, representative scopes, placeholder imagery).
+- 2026-09-26: Inquiry status pipeline — New / Contacted / Quoted / Closed stages (PATCH /api/rfq/{id}/status, admin-only), colour-coded badges, per-inquiry "Move to" controls, and filter tabs with live counts in the dashboard.
 
 ## Backlog (prioritized)
 - P0: Real project photography replacing placeholders; verify owner email deliverability on production domain (or switch OWNER_EMAIL to a deliverable inbox)

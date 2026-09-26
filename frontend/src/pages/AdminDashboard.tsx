@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ApiError, apiGet, apiPost } from "@/lib/api";
+import { ApiError, apiGet, apiPatch, apiPost } from "@/lib/api";
 import { FileDown, Loader2, LogOut, RefreshCw } from "lucide-react";
 
 interface AdminUser {
@@ -21,8 +21,18 @@ interface Rfq {
   message: string;
   attachment_path: string | null;
   attachment_name: string | null;
+  status: string;
   created_at: string;
 }
+
+const STATUSES = ["New", "Contacted", "Quoted", "Closed"] as const;
+
+const STATUS_STYLES: Record<string, string> = {
+  New: "border-[#FF6B00]/50 bg-[#FF6B00]/10 text-[#FF6B00]",
+  Contacted: "border-[#38BDF8]/50 bg-[#38BDF8]/10 text-[#38BDF8]",
+  Quoted: "border-[#22C55E]/50 bg-[#22C55E]/10 text-[#22C55E]",
+  Closed: "border-[#64748B]/50 bg-[#64748B]/10 text-[#94A3B8]",
+};
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleString("en-GB", {
@@ -42,6 +52,8 @@ export default function AdminDashboard() {
   const [checking, setChecking] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [filter, setFilter] = useState<string>("All");
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const loadRfqs = useCallback(async () => {
     const list = await apiGet<Rfq[]>("/rfq");
@@ -79,6 +91,28 @@ export default function AdminDashboard() {
     await apiPost("/auth/logout");
     navigate("/admin/login", { replace: true });
   };
+
+  const setStatus = async (rfq: Rfq, status: string) => {
+    if (rfq.status === status) return;
+    setUpdatingId(rfq.id);
+    try {
+      const updated = await apiPatch<Rfq>(`/rfq/${rfq.id}/status`, { status });
+      setRfqs((list) => list.map((r) => (r.id === rfq.id ? updated : r)));
+    } catch {
+      setError("Could not update the status. Please try again.");
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const counts = useMemo(() => {
+    const c: Record<string, number> = { All: rfqs.length };
+    for (const s of STATUSES) c[s] = 0;
+    for (const r of rfqs) c[r.status] = (c[r.status] ?? 0) + 1;
+    return c;
+  }, [rfqs]);
+
+  const visible = filter === "All" ? rfqs : rfqs.filter((r) => r.status === filter);
 
   if (checking) {
     return (
@@ -134,7 +168,7 @@ export default function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-7xl px-5 py-10 lg:px-8">
-        <div className="mb-8 flex items-end justify-between">
+        <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="font-mono text-[11px] tracking-[0.22em] text-[#FF6B00] uppercase">
               Lead Capture
@@ -143,12 +177,28 @@ export default function AdminDashboard() {
               Submitted requirements
             </h1>
           </div>
-          <p
-            className="font-mono text-xs text-[#64748B]"
-            data-testid="admin-rfq-count"
-          >
+          <p className="font-mono text-xs text-[#64748B]" data-testid="admin-rfq-count">
             {rfqs.length} {rfqs.length === 1 ? "inquiry" : "inquiries"}
           </p>
+        </div>
+
+        <div className="mb-8 flex flex-wrap gap-2" data-testid="admin-status-filters">
+          {["All", ...STATUSES].map((s) => (
+            <button
+              key={s}
+              type="button"
+              data-testid={`status-filter-${s.toLowerCase()}`}
+              onClick={() => setFilter(s)}
+              className={`cursor-pointer border px-3.5 py-2 font-mono text-[11px] tracking-[0.14em] uppercase transition-colors ${
+                filter === s
+                  ? "border-[#FF6B00] bg-[#FF6B00]/10 text-[#FF6B00]"
+                  : "border-[#334155] text-[#94A3B8] hover:border-[#475569] hover:text-[#F8FAFC]"
+              }`}
+            >
+              {s}
+              <span className="ml-2 text-[#64748B]">{counts[s] ?? 0}</span>
+            </button>
+          ))}
         </div>
 
         {error && (
@@ -157,19 +207,21 @@ export default function AdminDashboard() {
           </p>
         )}
 
-        {rfqs.length === 0 && !error ? (
+        {visible.length === 0 && !error ? (
           <div
             className="border border-dashed border-[#334155] p-16 text-center"
             data-testid="admin-empty-state"
           >
-            <p className="font-heading text-lg text-[#94A3B8]">No inquiries yet.</p>
+            <p className="font-heading text-lg text-[#94A3B8]">
+              {filter === "All" ? "No inquiries yet." : `No ${filter.toLowerCase()} inquiries.`}
+            </p>
             <p className="mt-2 text-sm text-[#64748B]">
               New RFQ submissions from the website will appear here instantly.
             </p>
           </div>
         ) : (
           <div className="grid gap-px border border-[#1E293B] bg-[#1E293B]" data-testid="admin-rfq-list">
-            {rfqs.map((r) => (
+            {visible.map((r) => (
               <article
                 key={r.id}
                 data-testid={`admin-rfq-item-${r.id}`}
@@ -183,17 +235,44 @@ export default function AdminDashboard() {
                     {r.name}
                   </p>
                   <p className="text-sm text-[#94A3B8]">{r.organization}</p>
+                  <span
+                    data-testid={`status-badge-${r.id}`}
+                    className={`mt-3 inline-block border px-2 py-1 font-mono text-[10px] tracking-[0.12em] uppercase ${STATUS_STYLES[r.status] ?? STATUS_STYLES.New}`}
+                  >
+                    {r.status}
+                  </span>
                 </div>
                 <div className="lg:col-span-2">
                   <p className="font-mono text-[10px] tracking-[0.18em] text-[#64748B] uppercase">
                     Type
                   </p>
-                  <span className="mt-2 inline-block border border-[#FF6B00]/40 bg-[#FF6B00]/10 px-2 py-1 font-mono text-[10px] tracking-[0.12em] text-[#FF6B00] uppercase">
+                  <span className="mt-2 inline-block border border-[#334155] bg-[#1E293B]/60 px-2 py-1 font-mono text-[10px] tracking-[0.12em] text-[#CBD5E1] uppercase">
                     {r.requirement_type}
                   </span>
                   {r.location && (
                     <p className="mt-2 text-xs text-[#94A3B8]">{r.location}</p>
                   )}
+                  <p className="mt-4 font-mono text-[10px] tracking-[0.18em] text-[#64748B] uppercase">
+                    Move to
+                  </p>
+                  <div className="mt-2 flex flex-wrap gap-1.5">
+                    {STATUSES.map((s) => (
+                      <button
+                        key={s}
+                        type="button"
+                        data-testid={`status-set-${s.toLowerCase()}-${r.id}`}
+                        onClick={() => setStatus(r, s)}
+                        disabled={updatingId === r.id || r.status === s}
+                        className={`cursor-pointer border px-2 py-1 font-mono text-[10px] tracking-[0.1em] uppercase transition-colors disabled:cursor-default ${
+                          r.status === s
+                            ? "border-transparent text-[#475569]"
+                            : "border-[#334155] text-[#94A3B8] hover:border-[#FF6B00] hover:text-[#FF6B00]"
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
                 </div>
                 <div className="lg:col-span-3">
                   <p className="font-mono text-[10px] tracking-[0.18em] text-[#64748B] uppercase">
