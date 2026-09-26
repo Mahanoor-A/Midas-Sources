@@ -89,8 +89,15 @@ export function Footer() {
             © 2007–{new Date().getFullYear()} Midas Sources International. All
             rights reserved.
           </p>
-          <p className="font-mono text-[11px] text-[#475569]">
-            33.5973° N, 73.0479° E — Rawalpindi, Pakistan
+          <p className="flex items-center gap-4 font-mono text-[11px] text-[#475569]">
+            <span>33.5973° N, 73.0479° E — Rawalpindi, Pakistan</span>
+            <a
+              href="/admin/login"
+              data-testid="footer-admin-link"
+              className="tracking-[0.18em] uppercase transition-colors hover:text-[#FF6B00]"
+            >
+              Admin
+            </a>
           </p>
         </div>
       </div>

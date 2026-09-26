@@ -11,6 +11,7 @@ import { IndustriesServed } from "@/components/IndustriesServed";
 import { HowMidasWorks } from "@/components/HowMidasWorks";
 import { ClientExperience } from "@/components/ClientExperience";
 import { ConversionStrip } from "@/components/ConversionStrip";
+import { CaseStudies } from "@/components/CaseStudies";
 import { ProjectShowcase } from "@/components/ProjectShowcase";
 import { QualityHse } from "@/components/QualityHse";
 import { ContactSection } from "@/components/ContactSection";
@@ -45,6 +46,7 @@ export default function Home() {
           <HowMidasWorks />
           <ClientExperience />
           <ConversionStrip />
+          <CaseStudies />
           <ProjectShowcase />
           <QualityHse />
           <ContactSection />

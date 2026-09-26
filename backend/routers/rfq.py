@@ -1,12 +1,17 @@
+import asyncio
+import logging
 import uuid
 from datetime import datetime, timezone
 from typing import List, Optional
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from pydantic import BaseModel, EmailStr, Field
 
 from lib.db import db
+from lib.emailer import send_rfq_notification
+from routers.auth import get_current_user
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -18,6 +23,8 @@ class RfqCreate(BaseModel):
     requirement_type: str = "General Inquiry"
     location: Optional[str] = Field(default=None, max_length=120)
     message: str = Field(min_length=10, max_length=5000)
+    attachment_path: Optional[str] = Field(default=None, max_length=300)
+    attachment_name: Optional[str] = Field(default=None, max_length=200)
 
 
 class Rfq(RfqCreate):
@@ -25,15 +32,23 @@ class Rfq(RfqCreate):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 
+async def _notify(rfq: Rfq) -> None:
+    try:
+        await send_rfq_notification(rfq)
+    except Exception:
+        logger.exception("RFQ notification email failed for %s", rfq.id)
+
+
 @router.post("/rfq", response_model=Rfq)
 async def create_rfq(input: RfqCreate):
     obj = Rfq(**input.model_dump())
     await db.rfqs.insert_one(obj.model_dump())
+    asyncio.create_task(_notify(obj))
     return obj
 
 
 @router.get("/rfq", response_model=List[Rfq])
-async def list_rfqs():
+async def list_rfqs(user: dict = Depends(get_current_user)):
     docs = await db.rfqs.find().sort("created_at", -1).to_list(500)
     out = []
     for d in docs:

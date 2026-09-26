@@ -17,13 +17,26 @@ load_dotenv(ROOT_DIR / '.env')
 
 # MongoDB connection
 from lib.db import client, db, ensure_indexes
+from lib.storage import init_storage
 from routers.rfq import router as rfq_router
+from routers.auth import router as auth_router, seed_admin
+from routers.files import router as files_router
+
+
+async def _init_storage_bg() -> None:
+    try:
+        await asyncio.to_thread(init_storage)
+        logger.info("Object storage initialized")
+    except Exception as exc:
+        logger.error("Object storage init failed: %s", exc)
 
 
 # Startup runs before the yield, shutdown after it. Add your own setup/teardown here.
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.state.index_task = asyncio.create_task(ensure_indexes())  # background: a big index build must not block boot
+    app.state.admin_task = asyncio.create_task(seed_admin())
+    app.state.storage_task = asyncio.create_task(_init_storage_bg())
     yield
     client.close()
 
@@ -62,6 +75,8 @@ async def get_status_checks():
     return [StatusCheck(**status_check) for status_check in status_checks]
 
 api_router.include_router(rfq_router)
+api_router.include_router(auth_router)
+api_router.include_router(files_router)
 
 # Include the router in the main app
 app.include_router(api_router)

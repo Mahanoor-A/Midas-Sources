@@ -25,13 +25,14 @@ Build the digital credibility + B2B lead-generation website for Midas Sources In
 
 ## Implemented
 - 2026-09-26: Full one-page site: kinetic masked-reveal hero with parallax refinery backdrop, editorial marquee, credibility strip, bento capability matrix, industries grid, process timeline, Section 6 client wall with hover color reveal + disclaimer, conversion strip, project showcase, Quality/HSE, contact, footer with live PKT clock, RFQ modal → `/api/rfq` (POST/GET) with toast confirmation. Original SVG "M" mark as logo + favicon. Verified end-to-end via public URL (browser pass + curl, 422 negative case).
+- 2026-09-26: Admin Inquiries Dashboard at /admin (JWT httpOnly-cookie auth, brute-force lockout, seeded admin from env, RFQ list with attachment downloads). Email alerts on every new RFQ via Emergent managed Resend (pipeline verified; gmail recipient blocked by platform deliverability guard in preview). BOQ file upload in RFQ modal via object storage (10MB, type-whitelisted, admin-only download). Case Snapshots section (4 sector cards, representative scopes, placeholder imagery).
 
 ## Backlog (prioritized)
-- P0: Admin view for submitted RFQs (GET /api/rfq currently unauthenticated); real project photography replacing placeholders
-- P1: Company profile PDF download; email notification on RFQ submission (Resend); BOQ file upload to object storage; case studies section
+- P0: Real project photography replacing placeholders; verify owner email deliverability on production domain (or switch OWNER_EMAIL to a deliverable inbox)
+- P1: Company profile PDF download; case studies managed from admin (CMS); RFQ status workflow (new/contacted/quoted/closed)
 - P2: SEO landing pages per capability/industry; vendor registration / certifications page; careers/news; Urdu language toggle
 
 ## Next tasks
-1. Secure/admin-gate the RFQ list and build an inquiries dashboard
-2. Wire email notifications on new RFQ
-3. Replace placeholder imagery with real Midas project photos (CMS-ready structure)
+1. Supply real project photos + confirm case-study scopes, then wire admin-managed case studies
+2. Add RFQ status tracking in the dashboard
+3. Company profile PDF generator/download

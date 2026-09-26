@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useRef, useState } from "react";
 import type { ReactNode } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { apiPost } from "@/lib/api";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, FileCheck2, Loader2, Paperclip, X } from "lucide-react";
 
 const REQUIREMENT_TYPES = [
   "RFQ",
@@ -40,6 +40,8 @@ interface RfqPayload {
   requirement_type: string;
   location: string;
   message: string;
+  attachment_path: string | null;
+  attachment_name: string | null;
 }
 
 interface Rfq extends RfqPayload {
@@ -65,11 +67,17 @@ const EMPTY: RfqPayload = {
   requirement_type: "RFQ",
   location: "",
   message: "",
+  attachment_path: null,
+  attachment_name: null,
 };
+
+const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 export function RfqProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState<RfqPayload>(EMPTY);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const openRfq = (requirementType?: string) => {
     setForm((f) => ({
@@ -102,6 +110,42 @@ export function RfqProvider({ children }: { children: ReactNode }) {
 
   const set = (key: keyof RfqPayload) => (value: string) =>
     setForm((f) => ({ ...f, [key]: value }));
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error("File too large", {
+        description: "Maximum attachment size is 10 MB.",
+      });
+      return;
+    }
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/uploads", { method: "POST", body: fd });
+      if (!res.ok) throw new Error(`upload failed with ${res.status}`);
+      const data = (await res.json()) as { path: string; name: string };
+      setForm((f) => ({
+        ...f,
+        attachment_path: data.path,
+        attachment_name: data.name,
+      }));
+      toast.success("Document attached", { description: data.name });
+    } catch {
+      toast.error("Upload failed", {
+        description:
+          "Please try again, or mention the document in your message instead.",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeAttachment = () =>
+    setForm((f) => ({ ...f, attachment_path: null, attachment_name: null }));
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -244,22 +288,72 @@ export function RfqProvider({ children }: { children: ReactNode }) {
                 id="rfq-message"
                 data-testid="rfq-input-message"
                 required
-                rows={5}
+                rows={4}
                 value={form.message}
                 onChange={(e) => set("message")(e.target.value)}
                 className="border-[#334155] bg-[#111827] text-[#F8FAFC]"
-                placeholder="Describe the scope, specifications, quantities, timelines, or attach context for your RFQ / BOQ."
+                placeholder="Describe the scope, specifications, quantities and timelines."
               />
-              <p className="font-mono text-[11px] text-[#64748B]">
-                BOQ documents &amp; drawings can be shared by email after this
-                initial submission.
-              </p>
+            </div>
+
+            <div className="grid gap-1.5">
+              <Label className="text-[#94A3B8]">
+                BOQ / drawings / specifications (optional)
+              </Label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                data-testid="rfq-attachment-input"
+                className="hidden"
+                accept=".pdf,.png,.jpg,.jpeg,.webp,.gif,.doc,.docx,.xls,.xlsx,.csv,.txt,.dwg"
+                onChange={handleFile}
+              />
+              {form.attachment_name ? (
+                <div
+                  className="flex items-center justify-between border border-[#FF6B00]/40 bg-[#FF6B00]/10 px-3 py-2.5"
+                  data-testid="rfq-attachment-chip"
+                >
+                  <span className="flex items-center gap-2 text-sm text-[#F8FAFC]">
+                    <FileCheck2 className="size-4 text-[#FF6B00]" aria-hidden="true" />
+                    <span className="max-w-72 truncate">{form.attachment_name}</span>
+                  </span>
+                  <button
+                    type="button"
+                    data-testid="rfq-attachment-remove"
+                    onClick={removeAttachment}
+                    aria-label="Remove attachment"
+                    className="cursor-pointer text-[#94A3B8] transition-colors hover:text-[#EF4444]"
+                  >
+                    <X className="size-4" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  data-testid="rfq-attachment-btn"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="flex cursor-pointer items-center justify-center gap-2.5 border border-dashed border-[#334155] px-4 py-3.5 font-mono text-[11px] tracking-[0.14em] text-[#94A3B8] uppercase transition-colors hover:border-[#FF6B00] hover:text-[#FF6B00] disabled:opacity-60"
+                >
+                  {uploading ? (
+                    <>
+                      <Loader2 className="size-4 animate-spin" aria-hidden="true" />
+                      Uploading…
+                    </>
+                  ) : (
+                    <>
+                      <Paperclip className="size-4" aria-hidden="true" />
+                      Attach document — PDF, image, office file (max 10 MB)
+                    </>
+                  )}
+                </button>
+              )}
             </div>
 
             <Button
               type="submit"
               data-testid="rfq-submit-btn"
-              disabled={mutation.isPending}
+              disabled={mutation.isPending || uploading}
               className="mt-1 h-11 w-full rounded-none bg-[#FF6B00] font-mono text-xs font-medium tracking-[0.18em] text-white uppercase transition-colors hover:bg-[#E05E00]"
             >
               {mutation.isPending ? (
