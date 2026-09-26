@@ -161,3 +161,7 @@
     linear-gradient(to bottom, rgba(51, 65, 85, 0.22) 1px, transparent 1px);
   background-size: 72px 72px;
 }
+
+section[id] {
+  scroll-margin-top: 4.5rem;
+}

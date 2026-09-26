@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRfq } from "@/components/RfqModal";
+import { Menu, X } from "lucide-react";
 
 const NAV = [
   { label: "Capabilities", href: "#capabilities" },
@@ -13,6 +14,8 @@ const NAV = [
 export function Header() {
   const { openRfq } = useRfq();
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [active, setActive] = useState<string>("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -21,20 +24,54 @@ export function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  useEffect(() => {
+    const sections = NAV.map((n) =>
+      document.querySelector<HTMLElement>(n.href)
+    ).filter((el): el is HTMLElement => el !== null);
+    if (sections.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActive(`#${entry.target.id}`);
+        }
+      },
+      { rootMargin: "-35% 0px -55% 0px" }
+    );
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
+
+  const goTo = useCallback((href: string) => {
+    setMenuOpen(false);
+    document
+      .querySelector(href)
+      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, []);
+
+  const linkClass = (href: string, mobile = false) =>
+    `cursor-pointer font-mono tracking-[0.14em] uppercase transition-colors ${
+      mobile ? "block py-3.5 text-sm" : "text-[11px]"
+    } ${
+      active === href
+        ? "text-[#FF6B00]"
+        : "text-[#94A3B8] hover:text-[#F8FAFC]"
+    }`;
+
   return (
     <header
       data-testid="site-header"
       className={`fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300 ${
-        scrolled
+        scrolled || menuOpen
           ? "border-[#1E293B] bg-[#0B0F17]/85 backdrop-blur-xl"
           : "border-transparent bg-transparent"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8">
-        <a
-          href="#top"
+        <button
+          type="button"
+          onClick={() => goTo("#top")}
           data-testid="header-logo"
-          className="group flex items-center gap-3"
+          className="group flex cursor-pointer items-center gap-3 text-left"
         >
           <svg
             viewBox="0 0 64 64"
@@ -56,7 +93,7 @@ export function Header() {
               International
             </span>
           </span>
-        </a>
+        </button>
 
         <nav
           className="hidden items-center gap-7 lg:flex"
@@ -64,18 +101,19 @@ export function Header() {
           data-testid="header-nav"
         >
           {NAV.map((item) => (
-            <a
+            <button
               key={item.href}
-              href={item.href}
+              type="button"
+              onClick={() => goTo(item.href)}
               data-testid={`nav-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
-              className="font-mono text-[11px] tracking-[0.14em] text-[#94A3B8] uppercase transition-colors hover:text-[#F8FAFC]"
+              className={linkClass(item.href)}
             >
               {item.label}
-            </a>
+            </button>
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           <span className="hidden border border-[#334155] px-2.5 py-1 font-mono text-[10px] tracking-[0.2em] text-[#94A3B8] md:block">
             EST. 2007
           </span>
@@ -87,8 +125,42 @@ export function Header() {
           >
             Submit an RFQ
           </button>
+          <button
+            type="button"
+            data-testid="mobile-menu-btn"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            className="flex size-10 cursor-pointer items-center justify-center border border-[#334155] text-[#F8FAFC] transition-colors hover:border-[#FF6B00] hover:text-[#FF6B00] lg:hidden"
+          >
+            {menuOpen ? (
+              <X className="size-5" aria-hidden="true" />
+            ) : (
+              <Menu className="size-5" aria-hidden="true" />
+            )}
+          </button>
         </div>
       </div>
+
+      {menuOpen && (
+        <nav
+          aria-label="Mobile"
+          data-testid="mobile-nav"
+          className="border-t border-[#1E293B] bg-[#0B0F17]/95 px-5 py-4 backdrop-blur-xl lg:hidden"
+        >
+          {NAV.map((item) => (
+            <button
+              key={item.href}
+              type="button"
+              onClick={() => goTo(item.href)}
+              data-testid={`mobile-nav-${item.label.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`}
+              className={`${linkClass(item.href, true)} w-full text-left`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }
